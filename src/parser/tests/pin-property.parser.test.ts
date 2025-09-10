@@ -1,6 +1,7 @@
 /// <reference types="jest" />
 
 import { PinPropertyParser } from '../../parser/pin-property.parser';
+import { PinDirection } from '../../data/pin/pin-direction';
 
 describe('PinPropertyParser - serializeAsSinglePrecisionFloat', () => {
     let parser: PinPropertyParser;
@@ -71,5 +72,29 @@ describe('PinPropertyParser - ParentPin', () => {
 
       expect(pinProperty).toBeDefined();
       expect(pinProperty.parentPin).toBe('');
+    });
+});
+
+describe('PinPropertyParser - DesiredPinDirection', () => {
+    let parser: PinPropertyParser;
+
+    beforeEach(() => {
+        parser = new PinPropertyParser();
+    });
+
+    test('PinPropertyParser can parse DesiredPinDirection=EGPD_Output', () => {
+      const propertyData = 'PinName="Context",PinType=(PinCategory="object"),DesiredPinDirection=EGPD_Output';
+      const pinProperty = parser.parse(propertyData, 'TestNode');
+
+      expect(pinProperty).toBeDefined();
+      expect(pinProperty.direction).toBe(PinDirection.EGPD_Output);
+    });
+
+    test('PinPropertyParser can parse DesiredPinDirection=EGPD_Input', () => {
+      const propertyData = 'PinName="InputPin",PinType=(PinCategory="object"),DesiredPinDirection=EGPD_Input';
+      const pinProperty = parser.parse(propertyData, 'TestNode');
+
+      expect(pinProperty).toBeDefined();
+      expect(pinProperty.direction).toBe(PinDirection.EGPD_Input);
     });
 });
