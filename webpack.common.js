@@ -15,7 +15,12 @@ module.exports = {
                     { loader: 'ts-loader' }, 
                     { loader: 'ifdef-loader', options: ifdefOptions }, 
                 ],
-                exclude: /node_modules/,
+                exclude: [
+                    /node_modules/,
+                    /\.test\.ts$/,
+                    /\.spec\.ts$/,
+                    /\/tests?\//
+                ],
             },
         ],
     },
