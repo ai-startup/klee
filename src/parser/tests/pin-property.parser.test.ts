@@ -98,3 +98,43 @@ describe('PinPropertyParser - DesiredPinDirection', () => {
       expect(pinProperty.direction).toBe(PinDirection.EGPD_Input);
     });
 });
+
+describe('PinPropertyParser - subCategoryObject null checks', () => {
+    let parser: PinPropertyParser;
+
+    beforeEach(() => {
+        parser = new PinPropertyParser();
+    });
+
+    test('Handles null subCategoryObject for PinCategory struct', () => {
+        const propertyData = 'PinName="TestStruct",PinType.PinCategory="struct"';
+        const pinProperty = parser.parse(propertyData, 'TestNode');
+
+        expect(pinProperty).toBeDefined();
+        expect(pinProperty.name).toBe('Test Struct');
+        expect(pinProperty.category).toBe('struct');
+        expect(pinProperty.subCategoryObject).toBeUndefined();
+    });
+
+    test('Handles null subCategoryObject for struct with DefaultValue', () => {
+        const propertyData = 'PinName="TestStruct",PinType.PinCategory="struct",DefaultValue="(X=1.0,Y=2.0,Z=3.0)"';
+        const pinProperty = parser.parse(propertyData, 'TestNode');
+
+        expect(pinProperty).toBeDefined();
+        expect(pinProperty.name).toBe('Test Struct');
+        expect(pinProperty.category).toBe('struct');
+        expect(pinProperty.subCategoryObject).toBeUndefined();
+        expect(pinProperty.defaultValue).toBeDefined();
+    });
+
+    test('Handles missing subCategoryObject for PinCategory byte with DefaultValue', () => {
+        const propertyData = 'PinName="TestByte",PinType.PinCategory="byte",DefaultValue="255"';
+        const pinProperty = parser.parse(propertyData, 'TestNode');
+
+        expect(pinProperty).toBeDefined();
+        expect(pinProperty.name).toBe('Test Byte');
+        expect(pinProperty.category).toBe('byte');
+        expect(pinProperty.subCategoryObject).toBeUndefined();
+        expect(pinProperty.defaultValue).toBeDefined();
+    });
+});
