@@ -24,4 +24,28 @@ describe('PinPropertyParser - serializeAsSinglePrecisionFloat', () => {
       expect(pinProperty).toBeDefined();
       expect(pinProperty.serializeAsSinglePrecisionFloat).toBe(false);
     });
-  });
+});
+
+describe('PinPropertyParser - SubPins', () => {
+    let parser: PinPropertyParser;
+
+    beforeEach(() => {
+        parser = new PinPropertyParser();
+    });
+
+    test('PinPropertyParser can parse SubPins property', () => {
+      const propertyData = 'PinId=123,PinName="TestPin",SubPins=(Node1 ABC,Node2 DEF,)';
+      const pinProperty = parser.parse(propertyData, 'TestNode');
+
+      expect(pinProperty).toBeDefined();
+      expect(pinProperty.subPins).toBe('(Node1 ABC,Node2 DEF,)');
+    });
+
+    test('PinPropertyParser can parse empty SubPins', () => {
+      const propertyData = 'PinId=456,PinName="TestPin",SubPins=()';
+      const pinProperty = parser.parse(propertyData, 'TestNode');
+
+      expect(pinProperty).toBeDefined();
+      expect(pinProperty.subPins).toBe('()');
+    });
+});
