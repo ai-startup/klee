@@ -49,3 +49,27 @@ describe('PinPropertyParser - SubPins', () => {
       expect(pinProperty.subPins).toBe('()');
     });
 });
+
+describe('PinPropertyParser - ParentPin', () => {
+    let parser: PinPropertyParser;
+
+    beforeEach(() => {
+        parser = new PinPropertyParser();
+    });
+
+    test('PinPropertyParser can parse ParentPin property', () => {
+      const propertyData = 'PinId=123,PinName="TestPin",ParentPin="ParentPinName"';
+      const pinProperty = parser.parse(propertyData, 'TestNode');
+
+      expect(pinProperty).toBeDefined();
+      expect(pinProperty.parentPin).toBe('ParentPinName');
+    });
+
+    test('PinPropertyParser can parse empty ParentPin', () => {
+      const propertyData = 'PinId=456,PinName="TestPin",ParentPin=""';
+      const pinProperty = parser.parse(propertyData, 'TestNode');
+
+      expect(pinProperty).toBeDefined();
+      expect(pinProperty.parentPin).toBe('');
+    });
+});
