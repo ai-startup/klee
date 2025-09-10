@@ -15,4 +15,19 @@ describe('ColorUtils', () => {
         expect(color).toBeDefined();
         expect(typeof color).toBe('string');
     });
+
+    test('getPinColor returns correct color for real category', () => {
+        const realPin = new PinProperty('RealPin');
+        realPin.category = PinCategory.real;
+        const realColor = ColorUtils.getPinColor(realPin);
+
+        const floatPin = new PinProperty('FloatPin');
+        floatPin.category = PinCategory.float;
+        const floatColor = ColorUtils.getPinColor(floatPin);
+
+        expect(realColor).toBeDefined();
+        expect(typeof realColor).toBe('string');
+        expect(realColor).toBe(floatColor);
+    });
 });
+
