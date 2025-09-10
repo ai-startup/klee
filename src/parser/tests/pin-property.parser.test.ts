@@ -138,3 +138,21 @@ describe('PinPropertyParser - subCategoryObject null checks', () => {
         expect(pinProperty.defaultValue).toBeDefined();
     });
 });
+
+describe('PinPropertyParser - support for INVTEXT', () => {
+    let parser: PinPropertyParser;
+
+    beforeEach(() => {
+        parser = new PinPropertyParser();
+    });
+
+    test('Can parse PinFriendlyName with INVTEXT', () => {
+        const propertyData = 'PinName="QueryExtent_Z",PinFriendlyName=LOCGEN_FORMAT_NAMED(NSLOCTEXT("KismetSchema", "SplitPinFriendlyNameFormat", "{PinDisplayName} {ProtoPinDisplayName}"), "PinDisplayName", INVTEXT("Query Extent"), "ProtoPinDisplayName", INVTEXT("Z"))';
+        const pinProperty = parser.parse(propertyData, 'TestNode');
+
+        expect(pinProperty).toBeDefined();
+        expect(pinProperty.name).toBe('Query Extent Z');
+        expect(pinProperty.name).not.toContain('INVTEXT');
+        expect(pinProperty.friendlyName).toBe('Query Extent Z');
+    });
+});
