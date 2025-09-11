@@ -155,4 +155,14 @@ describe('PinPropertyParser - support for INVTEXT', () => {
         expect(pinProperty.name).not.toContain('INVTEXT');
         expect(pinProperty.friendlyName).toBe('Query Extent Z');
     });
+
+    test('Can parse simple INVTEXT PinFriendlyName', () => {
+        const propertyData = 'PinName="PropertyKey",PinFriendlyName=INVTEXT("Property Key")';
+        const pinProperty = parser.parse(propertyData, 'TestNode');
+
+        expect(pinProperty).toBeDefined();
+        expect(pinProperty.name).toBe('Property Key');
+        expect(pinProperty.friendlyName).toBe('Property Key');
+        expect(pinProperty.friendlyName).not.toContain('INVTEXT');
+    });
 });
