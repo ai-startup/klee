@@ -5,8 +5,6 @@ import { ParsingNodeData } from '../../parsing-node-data';
 import { PinDirection } from '../../../data/pin/pin-direction';
 import { TestableNodeControl } from '../../../tests/testable-node-control';
 
-// Mock require.context for plugin loading
-(require as any).context = () => ({ keys: () => [] });
 
 // Mock UnrealNodeClass to reduce expensive constructor loop
 jest.mock('../../../data/classes/unreal-node-class', () => ({
