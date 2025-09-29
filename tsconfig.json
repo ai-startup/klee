@@ -6,6 +6,8 @@
         "outDir": "./dist/",
         "sourceMap": true,
         "jsx": "react",
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true
     },
     "include": [
         "src/**/*"
