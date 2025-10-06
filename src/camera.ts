@@ -1,6 +1,11 @@
 import { Canvas2D } from "./canvas";
 import { Vector2 } from "./math/vector2";
 
+export const StartingPositionType = {
+    CENTER: "center",
+    TOP_LEFT: "top-left"
+};
+
 export class Camera {
 
     private _canvas: Canvas2D;
@@ -9,6 +14,7 @@ export class Camera {
     private _zoom: number = 1.0;
     private _minZoom: number = 0.5;
     private _maxZoom: number = 2.0;
+    private _startingPositionType = StartingPositionType.CENTER;
 
     constructor(canvas: Canvas2D) {
         this._canvas = canvas;
@@ -18,6 +24,14 @@ export class Camera {
 
     public get position(): Vector2 {
         return this._position;
+    }
+
+    public get startingPosition(): string {
+        return this._startingPositionType;
+    }
+
+    public set startingPosition(position: string) {
+        this._startingPositionType = position;
     }
 
     public get zoom(): number {
@@ -58,15 +72,25 @@ export class Camera {
     }
 
     zoomIn(factor: number = 1.2) {
-        const centerX = this._canvas.width / 2;
-        const centerY = this._canvas.height / 2;
-        this.zoomAtPoint(factor, centerX, centerY);
+        if (this._startingPositionType === StartingPositionType.TOP_LEFT) {
+            this.zoomAtPoint(factor, this._position.x, this._position.y);
+        }
+        else {
+            const centerX = this._canvas.width / 2;
+            const centerY = this._canvas.height / 2;
+            this.zoomAtPoint(factor, centerX, centerY);
+        }
     }
 
     zoomOut(factor: number = 0.8) {
-        const centerX = this._canvas.width / 2;
-        const centerY = this._canvas.height / 2;
-        this.zoomAtPoint(factor, centerX, centerY);
+        if (this._startingPositionType === StartingPositionType.TOP_LEFT) {
+            this.zoomAtPoint(factor, this._position.x, this._position.y);
+        }
+        else {
+            const centerX = this._canvas.width / 2;
+            const centerY = this._canvas.height / 2;
+            this.zoomAtPoint(factor, centerX, centerY);
+        }
     }
 
     private zoomAtPoint(factor: number, centerX: number, centerY: number) {
