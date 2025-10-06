@@ -5,6 +5,7 @@ export class Camera {
 
     private _canvas: Canvas2D;
     private _position: Vector2;
+    private _startingPosition: Vector2;
     private _zoom: number = 1.0;
     private _minZoom: number = 0.5;
     private _maxZoom: number = 2.0;
@@ -12,6 +13,7 @@ export class Camera {
     constructor(canvas: Canvas2D) {
         this._canvas = canvas;
         this._position = new Vector2(0, 0);
+        this._startingPosition = new Vector2(0, 0);
     }
 
     public get position(): Vector2 {
@@ -49,6 +51,12 @@ export class Camera {
             Math.round(value.y + this._canvas.height / 2));
     }
 
+    positionAt(value: Vector2) {
+        this._position = new Vector2(
+            Math.round(value.x),
+            Math.round(value.y));
+    }
+
     zoomIn(factor: number = 1.2) {
         const centerX = this._canvas.width / 2;
         const centerY = this._canvas.height / 2;
@@ -73,7 +81,13 @@ export class Camera {
         this._position = this._position.add(new Vector2(offsetX, offsetY));
     }
 
+    setStartingPosition(position: Vector2) {
+        this._startingPosition = position.copy();
+        this._position = position.copy();
+    }
+
     resetZoom() {
         this._zoom = 1.0;
+        this._position = this._startingPosition.copy();
     }
 }
