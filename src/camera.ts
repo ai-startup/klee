@@ -26,6 +26,14 @@ export class Camera {
         this._zoom = Math.max(this._minZoom, Math.min(this._maxZoom, value));
     }
 
+    public get isAtMinZoom(): boolean {
+        return this._zoom <= this._minZoom;
+    }
+
+    public get isAtMaxZoom(): boolean {
+        return this._zoom >= this._maxZoom;
+    }
+
     prepareViewport() {
         this._canvas.translate(Math.round(this._position.x), Math.round(this._position.y));
         this._canvas.scale(this._zoom, this._zoom);
