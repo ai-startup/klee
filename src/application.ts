@@ -186,3 +186,9 @@ export class Application {
         return app;
     }
 }
+
+// Export Application to global scope for external controls
+if (window) {
+    (window as any).KleeApplication = Application;
+}
+
