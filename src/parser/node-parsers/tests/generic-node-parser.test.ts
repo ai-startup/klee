@@ -5,9 +5,6 @@ import { ParsingNodeData } from '../../parsing-node-data';
 import { PinDirection } from '../../../data/pin/pin-direction';
 import { TestableNodeControl } from '../../../tests/testable-node-control';
 
-// Mock browser APIs that aren't available in Node.js
-global.Path2D = jest.fn().mockImplementation((path) => ({ path }));
-
 // Mock require.context for plugin loading
 (require as any).context = () => ({ keys: () => [] });
 

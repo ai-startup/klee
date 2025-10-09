@@ -11,4 +11,5 @@ module.exports = {
     '!src/**/*.test.ts'
   ],
   clearMocks: true,
+  setupFiles: ['<rootDir>/src/jest.setup.ts'],
 };

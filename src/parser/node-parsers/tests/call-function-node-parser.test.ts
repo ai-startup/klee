@@ -5,9 +5,6 @@ import { ParsingNodeData } from '../../parsing-node-data';
 import { CallFunctionNode } from '../../../data/nodes/call-function.node';
 import { Vector2 } from '../../../math/vector2';
 
-// Mock browser APIs that aren't available in Node.js
-global.Path2D = jest.fn().mockImplementation((path) => ({ path }));
-
 describe('CallFunctionNodeParser', () => {
     test('bDefaultsToPureFunc=True sets isPureFunc to true', () => {
         const parser = new CallFunctionNodeParser();
