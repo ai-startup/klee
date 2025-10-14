@@ -1,6 +1,7 @@
 /// <reference types="jest" />
 
 import { GenericNodeParser } from '../generic-node.parser';
+import { NodeParserRegistry } from "../../node-parser-registry";
 import { ParsingNodeData } from '../../parsing-node-data';
 import { PinDirection } from '../../../data/pin/pin-direction';
 import { TestableNodeControl } from '../../../tests/testable-node-control';
@@ -17,7 +18,8 @@ describe('GenericNodeParser', () => {
     let parser: GenericNodeParser;
 
     beforeEach(() => {
-        parser = new GenericNodeParser();
+        let nodeParserRegistry = new NodeParserRegistry();
+        parser = new GenericNodeParser(nodeParserRegistry);
     });
 
     test('Can parse CustomProperties UserDefinedPin', () => {
