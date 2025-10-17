@@ -97,13 +97,14 @@ export class PinPropertyParser implements CustomPropertyParser {
 
         // ([a-zA-Z0-9_.]+)                     Capture key (similar to \w, but also allows dots)
         // \s*=\s*                              Equal sign between optional white spaces
-        // (("[^"]*")|(\([^\)]*\))|([^,]*))     Captures a value implemented in one of 4 types
+        // (("[^"]*")|(\([^\)]*\))|([^,]*))     Captures a value implemented in one of several types
         //      ("[^"]*")                         Type 1: capture quoted values            e.g.: PinName="self"
         //      (\([^\)]*\))                      Type 2: capture values set in brackets   e.g.: LinkedTo=(K2Node_CallFunction_0 6A3D6AD94697B8938F5061A6BA9D5FF2,)
         //      (\w*\(\w*(?:[^\(]*\([^\)]*\))*\)) Type 3: capture multilevel loctext       e.g.: PinFriendlyName=LOCGEN_FORMAT_NAMED(NSLOCTEXT("KismetSchema", "SplitPinFriendlyNameFormat", "{PinDisplayName} {ProtoPinDisplayName}"), "PinDisplayName", NSLOCTEXT("", "E767B2BA4B1D5DFDD5E21E953300AB1E", "Settings"), "ProtoPinDisplayName", NSLOCTEXT("", "182F932842DA4BEA8624D89F6CD70FDA", "Attenuation Settings"))
         //      (\w*\([^\)]*\))                   Type 4: capture method values            e.g.: PinFriendlyName=NSLOCTEXT("K2Node", "Target", "Target")
         //      ([^,]*)                           Type 5: capture pure values              e.g.: PinType.bIsConst=False
-        const matches = propertyData.matchAll(/([a-zA-Z0-9_.]+)\s*=\s*(("[^"]*")|(\([^)]*\))|(\w*\(\w*(?:[^(]*\([^)]*(?:"[^"]*")\))*\))|(\w*\([^)]*\([^)]*\)[^)]*\))|(\w*\([^)]*\))|([^,]*))/g);
+        //      ("(?:[^"\\]|\\.)*\([^)]*\)")      Type 6: capture struct values with escaped quotes e.g.: DefaultValue="(ExecutionFunction=\"\",CallbackTarget=None)"
+        const matches = propertyData.matchAll(/([a-zA-Z0-9_.]+)\s*=\s*(("(?:[^"\\]|\\.)*\([^)]*\)")|("[^"]*")|(\([^)]*\))|(\w*\(\w*(?:[^(]*\([^)]*(?:"[^"]*")\))*\))|(\w*\([^)]*\([^)]*\)[^)]*\))|(\w*\([^)]*\))|([^,]*))/g);
 
         for (const [fullMatch, key, value] of matches) {
             if(!fullMatch || !key) { console.warn(`Skipped property attribute because invalid key: '${fullMatch}'`); continue; }
