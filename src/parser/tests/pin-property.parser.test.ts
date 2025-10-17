@@ -54,6 +54,44 @@ describe('PinPropertyParser - Regex Value Parsing', () => {
         expect(pinProperty.isReference).toBe(true);
     });
 
+    test('Type 6: Can parse struct values with escaped quotes', () => {
+        const propertyData = 'PinId=ABC123,PinName="LatentInfo",PinType.PinCategory="struct",PinType.PinSubCategoryObject="/Script/CoreUObject.ScriptStruct\'/Script/Engine.LatentActionInfo\'",DefaultValue="(Linkage=-1,UUID=-1,ExecutionFunction=\\"\\",CallbackTarget=None)",bHidden=True';
+        const pinProperty = parser.parse(propertyData, 'TestNode');
+
+        expect(pinProperty).toBeDefined();
+        expect(pinProperty.name).toBe('Latent Info');
+        expect(pinProperty.category).toBe('struct');
+        expect(pinProperty.hidden).toBe(true);
+        expect(pinProperty.defaultValue).toBeDefined();
+        expect(Array.isArray(pinProperty.defaultValue)).toBe(true);
+
+        const structFields = pinProperty.defaultValue as Array<{ key: string, value: string }>;
+        expect(structFields.length).toBe(4);
+        expect(structFields.find(f => f.key === 'Linkage')).toBeDefined();
+        expect(structFields.find(f => f.key === 'UUID')).toBeDefined();
+        expect(structFields.find(f => f.key === 'ExecutionFunction')).toBeDefined();
+        expect(structFields.find(f => f.key === 'CallbackTarget')).toBeDefined();
+        expect(structFields.find(f => f.key === 'CallbackTarget')?.value).toBe('None');
+    });
+
+    test('Does not treat struct fields as separate pin attributes', () => {
+        // i.e. doesn't split on commas inside DefaultValue with escaped quotes
+        const propertyData = 'PinId=ABC123,PinName="TestPin",PinType.PinCategory="struct",PinType.PinSubCategoryObject="/Script/Engine.TestStruct",DefaultValue="(A=1,B=\\"test\\",C=None)"';
+        const pinProperty = parser.parse(propertyData, 'TestNode');
+
+        expect(pinProperty).toBeDefined();
+        expect(pinProperty.name).toBe('Test Pin');
+        expect(pinProperty.category).toBe('struct');
+        expect(pinProperty.defaultValue).toBeDefined();
+        expect(Array.isArray(pinProperty.defaultValue)).toBe(true);
+
+        const structFields = pinProperty.defaultValue as Array<{ key: string, value: string }>;
+        expect(structFields.length).toBe(3);
+        expect(structFields.find(f => f.key === 'A')).toBeDefined();
+        expect(structFields.find(f => f.key === 'B')).toBeDefined();
+        expect(structFields.find(f => f.key === 'C')).toBeDefined();
+    });
+
     test('Can parse complex property with multiple value types', () => {
         const propertyData = 'PinId=ABC123,PinName="ComplexPin",PinFriendlyName=NSLOCTEXT("", "12345", "Friendly Name"),LinkedTo=(Node1 GUID1,),PinType.bIsConst=False,DefaultValue="test"';
         const pinProperty = parser.parse(propertyData, 'TestNode');
