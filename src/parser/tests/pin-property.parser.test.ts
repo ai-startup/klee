@@ -2,6 +2,9 @@
 
 import { PinPropertyParser } from '../../parser/pin-property.parser';
 import { PinDirection } from '../../data/pin/pin-direction';
+import { ColorBoxControl } from '../../controls/color-box.control';
+import { Color } from '../../data/color';
+
 
 describe('PinPropertyParser - Regex Value Parsing', () => {
     let parser: PinPropertyParser;
@@ -266,5 +269,32 @@ describe('PinPropertyParser - support for INVTEXT', () => {
         expect(pinProperty.name).toBe('Property Key');
         expect(pinProperty.friendlyName).toBe('Property Key');
         expect(pinProperty.friendlyName).not.toContain('INVTEXT');
+    });
+});
+
+describe('PinPropertyParser - LinearColor ColorBox', () => {
+    let parser: PinPropertyParser;
+
+    beforeEach(() => {
+        parser = new PinPropertyParser();
+    });
+
+    test('Can parse PinSubCategoryObject with LinearColor reference', () => {
+        const propertyData = 'PinName="TestColor",PinType.PinCategory="struct",PinType.PinSubCategoryObject="/Script/CoreUObject.LinearColor",DefaultValue="(R=1.0,G=0.0,B=0.0,A=1.0)"';
+        const pinProperty = parser.parse(propertyData, 'TestNode');
+
+        expect(pinProperty).toBeDefined();
+        expect(pinProperty.subCategoryObject?.class).toBe('/Script/CoreUObject.LinearColor');
+        expect(pinProperty.defaultValue).toBeInstanceOf(Color);
+        expect(pinProperty.defaultValueControlClass).toBe(ColorBoxControl);
+    });
+
+    test('Can parse PinSubCategoryObject with ScriptStruct wrapper', () => {
+        const propertyData = 'PinName="Location",PinType.PinCategory="struct",PinType.PinSubCategoryObject="/Script/CoreUObject.ScriptStruct\'/Script/CoreUObject.Vector\'",DefaultValue="0, 0, 0"';
+        const pinProperty = parser.parse(propertyData, 'TestNode');
+
+        expect(pinProperty).toBeDefined();
+        expect(pinProperty.subCategoryObject?.class).toBe('/Script/CoreUObject.Vector');
+        expect(pinProperty.subCategoryObject?.type).toBe('/Script/CoreUObject.ScriptStruct');
     });
 });

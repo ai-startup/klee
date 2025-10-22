@@ -142,14 +142,26 @@ export class PinPropertyParser implements CustomPropertyParser {
 
 
     private static parseSubCategoryObject(value: string): PinSubCategoryObject {
-        let className = value;
-        let type = value.substring(0, value.indexOf("'"));
-        let matches = value.matchAll(/'"(.*)"'/g);
-        if (matches) {
-            let match = matches.next();
+        // Remove only the outer double quotes, preserve inner single quotes
+        if (value.startsWith('"') && value.endsWith('"')) {
+            value = value.substring(1, value.length - 1);
+        }
 
-            if (match && match.value) {
-                className = match.value[1];
+        let className = value;
+        let type = '';
+
+        // Check if there's a wrapper format like:
+        // /Script/CoreUObject.ScriptStruct'/Script/CoreUObject.Vector'
+        // Split by single quote to extract the parts
+        const quoteIndex = value.indexOf("'");
+        if (quoteIndex !== -1) {
+            // Extract the type (everything before the first single quote)
+            type = value.substring(0, quoteIndex);
+            // Extract the inner class path (between the single quotes)
+            const remainingPart = value.substring(quoteIndex + 1);
+            const endQuoteIndex = remainingPart.lastIndexOf("'");
+            if (endQuoteIndex !== -1) {
+                className = remainingPart.substring(0, endQuoteIndex);
             }
         }
 
